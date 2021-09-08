@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+message Medicamento {
+    int32 idmedicamento = 1;
+    string nombre = 2;
+    //repeated Nombre listNombre = 2;
+    int32 cantidad = 3;
+    string codigo = 4;
+    string tipo = 5;
+    //repeated Codigo listCodigo = 4;
+    //repeated Tipo listTipo = 5;
+}
+
+message Empty {
+}
+//Los Protocol Buffers no nos permiten como tal llamar a una funcion que no reciba 
+//argumentos o recbir de una funcion que no regrese argumentos.
+// El message Empty me permite invocar metodos en el servidor remoto que no reciban ningun argumento
+
+service Farmacia {
+    //rpc MethodName (Empty) returns (Empty); invoca un metodo que no recibe argumentos y no devuelve nada
+    rpc esPrioritario(codigo) returns (bool) {}
+    rpc verificar(codigo) returns (bool) {}
+}
+//Creamos la definicion de los servicios o de los metodos que se van a poder llamar en mi cliente o 
+//en mi servidor
+
+
+//rpc HelloServer(RequestMessage) returns (ResponseMessage);
+/*RPC unarios: este es un gRPC simple que funciona como una llamada de función normal. Envía una única 
+solicitud declarada en el archivo .proto al servidor y obtiene una única respuesta del servidor.*/
+
+//rpc HelloServer(RequestMessage) returns (stream ResponseMessage);
+/*RPC de transmisión del servidor: - El cliente envía un mensaje declarado en el archivo .proto al 
+servidor y obtiene una transmision de secuencia de mensajes para leer. El cliente lee ese flujo de mensajes 
+hasta que no hay mensajes.*/
+
+//rpc HelloServer(stream RequestMessage) returns (ResponseMessage);
+/*RPC de transmisión de clientes: - El cliente escribe una secuencia de mensajes utilizando una secuencia de 
+escritura y envía la misma al servidor. Después de que todos los mensajes se envían al servidor, el cliente 
+espera a que el servidor lea todos los mensajes y devuelva una respuesta.*/
+
+//rpc HelloServer(stream RequestMessage) returns (stream ResponseMessage);
+/*RPC de transmisión bidireccional: - Tanto el cliente gRPC como el servidor gRPC utilizan una transmisión 
+de lectura y escritura para enviar una secuencia de mensajes. Ambos operan de forma independiente, por lo 
+que los clientes de gRPC y los servidores de gRPC pueden escribir y leer en el orden que deseen, es decir, 
+el servidor puede leer un mensaje y luego escribir un mensaje alternativamente, esperar a recibir todos los 
+mensajes y luego escribir sus respuestas, o realizar lecturas y escrituras en cualquier otra combinación.*/
